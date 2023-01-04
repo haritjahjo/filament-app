@@ -8,7 +8,7 @@ return new class extends Migration
 {
     /**
      * Run the migrations.
-     *
+     * Seharusnya di copy paste dimari
      * @return void
      */
     public function up()
@@ -20,6 +20,7 @@ return new class extends Migration
 
     /**
      * Reverse the migrations.
+     * Awal Kesalahan copy paste migrate add role_id
      *
      * @return void
      */
