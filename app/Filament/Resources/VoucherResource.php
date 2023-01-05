@@ -25,9 +25,14 @@ class VoucherResource extends Resource
             ->schema([
                 Forms\Components\TextInput::make('code')
                     ->required()
-                    ->maxLength(255),
+                    ->maxLength(255)
+                    ->unique(ignorable: fn ($record) => $record)
+                    ->dehydrateStateUsing(fn ($state) => strtoupper($state)),
                 Forms\Components\TextInput::make('discount_percent')
-                    ->required(),
+                    ->required()
+                    ->numeric()
+                    ->default(state:10)
+                    ->extraInputAttributes(attributes:['min'=> 1, 'max'=> 100, 'step'=>1]),
                 Forms\Components\Select::make('product_id')
                     ->relationship('product', 'name'),
             ]);
@@ -42,6 +47,9 @@ class VoucherResource extends Resource
                 Tables\Columns\TextColumn::make('product.name')->label(label:'Product')->sortable()->searchable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->date(format:'d/m/Y H:i')->label(label:'Created at')->sortable()->searchable(),
+                Tables\Columns\TextColumn::make(name:'payments_count')
+                    ->counts(relationship:'payments')
+                    ->label(label:'Times Used'),
             ])
             ->defaultSort(column:'created_at', direction:'desc')
             ->filters([

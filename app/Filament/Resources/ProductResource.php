@@ -2,9 +2,11 @@
 
 namespace App\Filament\Resources;
 
+use Closure;
 use Filament\Forms;
 use Filament\Tables;
 use App\Models\Product;
+use Illuminate\Support\Str;
 use Filament\Resources\Form;
 use Filament\Resources\Table;
 use Filament\Resources\Resource;
@@ -13,6 +15,8 @@ use Illuminate\Database\Eloquent\Builder;
 use App\Filament\Resources\ProductResource\Pages;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Resources\ProductResource\RelationManagers;
+use Filament\Forms\Components\FileUpload;
+use Filament\Tables\Columns\ImageColumn;
 
 class ProductResource extends Resource
 {
@@ -24,12 +28,19 @@ class ProductResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make(name:'name')
+                Forms\Components\TextInput::make(name: 'name')
                     ->required()
-                    ->maxLength(length:255),
-                Forms\Components\TextInput::make(name:'price')
-                    ->required()                    
-                    ->rule(rule:'numeric'),
+                    ->maxLength(length: 255)
+                    ->reactive()
+                    ->afterStateUpdated(callback: function (Closure $set, $state) {
+                        $set('slug', Str::slug($state));
+                    })
+                    ->dehydrateStateUsing(fn ($state) => ucwords($state)),
+                Forms\Components\TextInput::make(name: 'slug'),
+                Forms\Components\TextInput::make(name: 'price')
+                    ->required()
+                    ->rule(rule: 'numeric'),
+                Forms\Components\FileUpload::make('image'),
             ]);
     }
 
@@ -37,9 +48,13 @@ class ProductResource extends Resource
     {
         return $table
             ->columns([
-               Tables\Columns\TextColumn::make(name:'name')->sortable()->searchable(),
-               Tables\Columns\TextColumn::make(name:'price')->sortable()
-                ->money(currency:'usd'),
+                Tables\Columns\TextColumn::make(name: 'name')->label(label:'Products')->sortable()->searchable(),
+                Tables\Columns\TextColumn::make(name: 'price')->sortable()
+                    ->label(label:'Price')
+                    ->money(currency: 'usd'),
+                Tables\Columns\ImageColumn::make('image')
+                    ->label(label:'Image')
+                    ->width(width:60)->height(height:60)->square(),
             ])
             ->filters([
                 //
@@ -51,14 +66,14 @@ class ProductResource extends Resource
                 Tables\Actions\DeleteBulkAction::make(),
             ]);
     }
-    
+
     public static function getRelations(): array
     {
         return [
             //
         ];
     }
-    
+
     public static function getPages(): array
     {
         return [
@@ -66,5 +81,5 @@ class ProductResource extends Resource
             'create' => Pages\CreateProduct::route('/create'),
             'edit' => Pages\EditProduct::route('/{record}/edit'),
         ];
-    }    
+    }
 }
