@@ -2,16 +2,17 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\ProductResource\Pages;
-use App\Filament\Resources\ProductResource\RelationManagers;
-use App\Models\Product;
 use Filament\Forms;
-use Filament\Resources\Form;
-use Filament\Resources\Resource;
-use Filament\Resources\Table;
 use Filament\Tables;
+use App\Models\Product;
+use Filament\Resources\Form;
+use Filament\Resources\Table;
+use Filament\Resources\Resource;
+use Tables\components\TextColumn;
 use Illuminate\Database\Eloquent\Builder;
+use App\Filament\Resources\ProductResource\Pages;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use App\Filament\Resources\ProductResource\RelationManagers;
 
 class ProductResource extends Resource
 {
@@ -23,7 +24,12 @@ class ProductResource extends Resource
     {
         return $form
             ->schema([
-                //
+                Forms\Components\TextInput::make(name:'name')
+                    ->required()
+                    ->maxLength(length:255),
+                Forms\Components\TextInput::make(name:'price')
+                    ->required()                    
+                    ->rule(rule:'numeric'),
             ]);
     }
 
@@ -31,7 +37,9 @@ class ProductResource extends Resource
     {
         return $table
             ->columns([
-                //
+               Tables\Columns\TextColumn::make(name:'name')->sortable()->searchable(),
+               Tables\Columns\TextColumn::make(name:'price')->sortable()
+                ->money(currency:'usd'),
             ])
             ->filters([
                 //

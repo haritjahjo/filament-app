@@ -16,4 +16,21 @@ class EditProduct extends EditRecord
             Actions\DeleteAction::make(),
         ];
     }
+
+    protected function getRedirectUrl(): string
+    {
+        return $this->getResource()::getUrl('index');
+    }
+
+    protected function mutateFormDataBeforesave(array $data): array
+    {
+        $data['price'] = $data['price'] * 100;
+        return $data;
+    }
+
+        protected function mutateFormDataBeforefill(array $data): array
+    {
+        $data['price'] = $data['price'] / 100;
+        return $data;
+    }
 }
