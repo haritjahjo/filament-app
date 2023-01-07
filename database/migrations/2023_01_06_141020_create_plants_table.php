@@ -13,8 +13,10 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('nppbkcs', function (Blueprint $table) {
+        Schema::create('plants', function (Blueprint $table) {
             $table->id();
+            $table->string('alamat');
+            $table->string('kota');
             $table->timestamps();
         });
     }
@@ -26,6 +28,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('nppbkcs');
+        Schema::dropIfExists('plants');
     }
 };
