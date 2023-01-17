@@ -9,9 +9,12 @@
         "filament/filament": "^2.0",
         "guzzlehttp/guzzle": "^7.2",
         "inertiajs/inertia-laravel": "^0.6.3",
+        "jeffgreco13/filament-breezy": "v1.4.10.1",
         "laravel/framework": "^9.19",
         "laravel/sanctum": "^2.8",
         "laravel/tinker": "^2.7",
+        "psr/simple-cache": "^2.0",
+        "pxlrbt/filament-excel": "^1.1",
         "tightenco/ziggy": "^1.0"
     },
     "require-dev": {
